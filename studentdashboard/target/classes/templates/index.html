@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button { margin: 10px 0; }
+    </style>
+</head>
+<body>
+<h1>Student Dashboard</h1>
+
+<h2>Register</h2>
+<form id="registerForm">
+    <input type="text" id="regName" placeholder="Full Name" required><br>
+    <input type="text" id="regUsername" placeholder="Username" required><br>
+    <input type="password" id="regPassword" placeholder="Password" required><br>
+    <button type="button" onclick="registerStudent()">Register</button>
+</form>
+
+<h2>Login</h2>
+<form id="loginForm">
+    <input type="text" id="loginUsername" placeholder="Username" required><br>
+    <input type="password" id="loginPassword" placeholder="Password" required><br>
+    <button type="button" onclick="loginStudent()">Login</button>
+</form>
+
+<h2>Create Application</h2>
+<form id="applicationForm">
+    <input type="text" id="appUsername" placeholder="Username" required><br>
+    <input type="text" id="universityName" placeholder="University Name" required><br>
+    <input type="text" id="course" placeholder="Course" required><br>
+    <button type="button" onclick="createApplication()">Create Application</button>
+</form>
+
+<script>
+        async function registerStudent() {
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+
+            const response = await fetch('/api/students/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, username, password })
+            });
+
+            const data = await response.json();
+            alert(`Student registered: ${data.name}`);
+        }
+
+        async function loginStudent() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const response = await fetch(`/api/students/login?username=${username}&password=${password}`, {
+                method: 'POST'
+            });
+
+            const data = await response.json();
+            if (data) {
+                alert(`Logged in as: ${data.name}`);
+            } else {
+                alert('Login failed');
+            }
+        }
+
+        async function createApplication() {
+            const username = document.getElementById('appUsername').value;
+            const universityName = document.getElementById('universityName').value;
+            const course = document.getElementById('course').value;
+
+            const response = await fetch(`/api/students/application?username=${username}&universityName=${universityName}&course=${course}`, {
+                method: 'POST'
+            });
+
+            const data = await response.json();
+            alert(`Application created for ${data.universityName}, course: ${data.course}`);
+        }
+    </script>
+</body>
+</html>
